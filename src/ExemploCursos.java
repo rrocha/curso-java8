@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 class Curso {
 	
@@ -54,6 +57,40 @@ public class ExemploCursos {
 				.sum();
 		
 		System.out.println(sum);
+		
+		//Calcular a quantidade média de alunos de todos os curso
+		OptionalDouble mediaNumeroAlunos = 
+				cursos.stream()
+				.mapToInt(Curso::getAlunos)
+				.average();
+		
+		System.out.println(mediaNumeroAlunos);
+		
+		//Trazer algum curso com mais 100 ou mais alunos
+		//Optional ajuda para a gente trabalhar com NULL
+		Optional<Curso> optionalCurso = 
+				cursos.stream()
+				.filter(c -> c.getAlunos() >= 100)
+				.findAny(); // Retorna algum curso
+		
+		//Se existir o curso ele printa algo, se não não printa
+		optionalCurso.ifPresent(c -> System.out.println(c.getNome()));
+		
+		//Collect: voltar de uma stream para uma collection
+		List<Curso> novaListaCursos = 
+				cursos.stream()
+				.filter(c -> c.getAlunos() >= 100)
+				.collect(Collectors.toList());
+		
+		System.out.println(novaListaCursos);
+		
+		//Retornar um Map
+		cursos
+			.stream()
+			.filter(c -> c.getAlunos() >= 100)
+			.collect(Collectors.toMap(c -> c.getNome(), c -> c.getAlunos()))
+			.forEach((nome, alunos) -> System.out.println(nome + " tem " + alunos + " alunos"));
+		
 	}
 
 }
